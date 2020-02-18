@@ -1,0 +1,6 @@
+- name: Setup ACI demonstration
+  hosts: all
+  connection: local
+  gather_facts: False
+  roles:
+    - aci-demo

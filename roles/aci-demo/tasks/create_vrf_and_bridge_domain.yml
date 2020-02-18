@@ -1,0 +1,36 @@
+- name: Create VRF
+  aci_vrf:
+    host: "{{ inventory_hostname }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    state: present
+    validate_certs: False
+    tenant: "{{ tenant }}"
+    vrf: "{{ vrf }}"
+    description: "VRF create using Ansible"
+
+- name: Create bridge domain
+  aci_bd:
+    host: "{{ inventory_hostname }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    state: present
+    validate_certs: False
+    tenant: "{{ tenant }}"
+    bd: "{{ bd }}"
+    vrf: "{{ vrf }}"
+    description: "BD create using Ansible"
+
+- name: Create "{{ tenant }}" tenant subnet
+  aci_bd_subnet:
+    host: "{{ inventory_hostname }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: False
+    state: "present"
+    tenant: "{{ tenant }}"
+    bd: "{{ bd }}"
+    gateway: "{{ gateway }}"
+    mask: "{{ mask }}"
+    scope: "{{ scope }}"
+    description: "Subnet Created Using Ansible"

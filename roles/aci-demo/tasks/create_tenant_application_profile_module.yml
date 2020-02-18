@@ -1,0 +1,56 @@
+- name: Create application profile
+  aci_ap:
+    host: "{{ inventory_hostname }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    state: "present"
+    validate_certs: false
+    tenant: "{{ tenant }}"
+    ap: "{{ ap }}"
+    description: "App Profile Created Using Ansible"
+
+- name: Create EPGs of application
+  aci_epg:
+    host: "{{ inventory_hostname }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    state: "present"
+    validate_certs: False
+    tenant: "{{ tenant }}"
+    ap: "{{ ap }}"
+    epg: "{{ item['epg'] }}"
+    bd: "{{ bd }}"
+    description: "EPG created using Ansible"
+  loop: "{{ epgs }}"
+
+- name: Ensure Domain is bound to EPG
+  aci_epg_to_domain:
+    host: "{{ inventory_hostname }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    state: "present"
+    validate_certs: false
+    tenant: "{{ tenant }}"
+    ap: "{{ ap }}"
+    epg: "{{ item['epg'] }}"
+    domain: "aci_ansible_lab"
+    domain_type: "vmm"
+    vm_provider: "vmware"
+    encap_mode: "auto"
+    encap: "{{ item.encap }}"
+  loop: "{{ epgs }}"
+
+- name: Ensure EPG is associated to contracts
+  aci_epg_to_contract:
+    host: "{{ inventory_hostname }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    state: "present"
+    validate_certs: False
+    tenant: "{{ tenant }}"
+    ap: "{{ ap }}"
+    epg: "{{ item['epg'] }}"
+    contract: "{{ item['contract'] }}"
+    contract_type: "{{ item['contract_type'] }}"
+  loop: "{{ epg_contracts }}"
+  ignore_errors: true

@@ -1,0 +1,7 @@
+- name: Setup AWS demonstration
+  hosts: all
+  connection: local
+  gather_facts: False
+  roles:
+    - createInstanceEC2
+    - deployApache

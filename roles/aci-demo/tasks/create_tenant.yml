@@ -1,0 +1,9 @@
+- name: Create "{{ tenant }}" tenant
+  aci_tenant:
+    host: "{{ inventory_hostname }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    state: present
+    validate_certs: False
+    tenant: "{{ tenant }}"
+    description: "Tenant create using Ansible"

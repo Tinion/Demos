@@ -1,0 +1,24 @@
+- name: Create contracts
+  aci_contract:
+    host: "{{ inventory_hostname }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    state: present
+    validate_certs: False
+    tenant: "{{ tenant }}"
+    contract: "{{ item.contract }}"
+    scope: "context"
+    description: "Contract create using Ansible"
+  loop: "{{ contracts }}"
+
+- name: Ensure contracts have contract subjects
+  aci_contract_subject:
+    host: "{{ inventory_hostname }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    state: present
+    validate_certs: False
+    tenant: "{{ tenant }}"
+    contract: "{{ item['contract'] }}"
+    subject: "{{ item['subject'] }}"
+  loop: "{{ contracts }}"

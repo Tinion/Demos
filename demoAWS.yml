@@ -1,0 +1,119 @@
+- hosts: local
+  connection: local
+  gather_facts: False
+  vars:
+    instance_type: t2.micro
+    security_group: webservers_sg
+    image: ami-07dc734dc14746eab 
+    keypair: aws_demo 
+    region: eu-west-2
+    count: 1
+  tasks:
+    - name: Create a security group for AWS - webservers_sg
+      ec2_group: 
+        name: "{{ security_group }}"
+        description: Webservers security group
+        region: "{{ region }}"
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        rules:
+          - proto: tcp
+            from_port: 22
+            to_port:   22
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 80
+            to_port:   80
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 443
+            to_port:   443
+            cidr_ip: 0.0.0.0/0
+        rules_egress:
+          - proto: all
+            cidr_ip: 0.0.0.0/0
+
+    - name: Launch new EC2 Instance
+      ec2:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        group: "{{ security_group }}"
+        instance_type: "{{ instance_type }}"
+        image: "{{ image }}"
+        wait: true
+        region: "{{ region }}"
+        keypair: "{{ keypair }}"
+        count: "{{ count }}"
+      register: ec2
+
+    - name: Add the newly created host so that we can further contact it
+      add_host:
+        name: "{{ item.public_ip }}"
+        groups: webservers
+      loop: "{{ ec2.instances }}"
+
+    - name: Add tag to Instance
+      ec2_tag:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        resource: "{{ item.id }}" 
+        region: "{{ region }}" 
+        state: "present"
+      loop: "{{ ec2.instances }}"
+      args:
+        tags:
+          Type: webserver
+
+    - name: Wait for SSH to come up
+      wait_for:
+        host: "{{ item.public_ip }}"
+        port: 22 
+        state: started 
+      loop: "{{ ec2.instances }}"
+
+    - name: Display name of newer instance
+      debug:
+        msg: "Nom DNS de notre instance : {{ item.public_dns_name }}"
+      loop: "{{ ec2.instances }}"
+
+- hosts: webservers
+  remote_user: ubuntu
+  become: yes
+  gather_facts: no
+  pre_tasks:
+    - name: 'install python'
+      raw: 'sudo apt-get -y install python'
+  tasks:
+    - name: Update APT cache && Upgrade APT to the latest packages
+      apt: 
+        update_cache: yes 
+        cache_valid_time: 3600
+
+    - name: Install Apache
+      apt:
+        name: apache2
+        state: present
+
+    - name: Replace index.html
+      copy:
+        src:  files/index.html
+        dest: /var/www/html/index.html
+        backup: yes
+
+    - name: Copy image on /var/www/html
+      copy:
+        src:  files/Ansible_ending.JPG
+        dest: /var/www/html/Ansible_ending.jpg
+
+    - name: Start apache2 service
+      service: 
+        name: apache2
+        state: started
+        enabled: yes
+
+    #- name: Edit index.html
+    #  shell: echo '<img src="Ansible_ending.jpg" alt="Image Ansible Ending">' > /var/www/html/index.html
+
+    - name: Le mot de la fin
+      debug:
+        msg: "Vous pouvez dès à présent vous connecter sur l'adresse : ec2-{{ inventory_hostname }}.eu-west-2.compute.amazonaws.com"

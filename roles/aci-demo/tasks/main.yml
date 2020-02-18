@@ -1,0 +1,30 @@
+---
+# tasks file for aci-demo
+
+- name: Include creation of tenant
+  include_tasks: create_tenant.yml
+  when: tenant is defined
+
+- name: Include creation of vrf and bridge domain
+  include_tasks: create_vrf_and_bridge_domain.yml
+  when:
+    - tenant is defined
+    - vrf    is defined
+    - bd     is defined
+
+- name: Include creation of policies
+  include_tasks: create_policies.yml
+  when:
+    - tenant  is defined
+    - filters is defined
+
+- name: Include creation of contracts
+  include_tasks: create_contracts.yml
+  when:
+    - tenant    is defined
+    - contracts is defined
+
+- name: Include creation of application profile module
+  include_tasks: create_tenant_application_profile_module.yml
+  when:
+    - tenant is defined
