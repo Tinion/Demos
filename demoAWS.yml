@@ -82,10 +82,10 @@
   gather_facts: yes
   pre_tasks:
     - name: Update
-      raw: apt update -y
+      raw: sudo apt-get update -y
       
     - name: Install python
-      raw: apt install python-minimal -y
+      raw: sudo apt-get install python-minimal -y
       
   tasks:
       
