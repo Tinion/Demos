@@ -4,7 +4,7 @@
   vars:
     instance_type: t2.micro
     security_group: webservers_sg
-    image: ami-07dc734dc14746eab 
+    image: ami-0b79808e499cf3385
     keypair: aws_demo 
     region: eu-west-2
     count: 1
@@ -81,9 +81,14 @@
   become: yes
   gather_facts: no
   pre_tasks:
-    - name: 'install python'
-      raw: 'sudo apt-get -y install python'
+    - name: Update
+      raw: "sudo apt-get update -y"
+      
+    - name: Install python
+      raw: "sudo apt-get install python -y"
+      
   tasks:
+      
     - name: Update APT cache && Upgrade APT to the latest packages
       apt: 
         update_cache: yes 
