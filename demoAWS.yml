@@ -81,7 +81,12 @@
   become: yes
   gather_facts: no
   tasks:
-  
+    - name: Update
+      shell: apt update
+      
+    - name: Install python
+      shell: apt install python  
+      
     - name: Update APT cache && Upgrade APT to the latest packages
       apt: 
         update_cache: yes 
