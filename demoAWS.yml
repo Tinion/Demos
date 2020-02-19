@@ -80,13 +80,6 @@
   remote_user: ubuntu
   become: yes
   gather_facts: no
-  pre_tasks:
-    - name: Update
-      raw: "sudo apt-get update -y"
-      
-    - name: Install python
-      raw: "sudo apt-get install python -y"
-      
   tasks:
       
     - name: Update APT cache && Upgrade APT to the latest packages
