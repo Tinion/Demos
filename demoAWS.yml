@@ -85,7 +85,7 @@
     
   pre_tasks:
     - name: install python
-      raw: "sudo apt install python"
+      command: "sudo apt install python"
       
   tasks:
       
