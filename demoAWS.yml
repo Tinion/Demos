@@ -80,6 +80,8 @@
   remote_user: ubuntu
   become: yes
   gather_facts: no
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
   tasks:
       
     - name: Update APT cache && Upgrade APT to the latest packages
