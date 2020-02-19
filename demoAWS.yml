@@ -82,10 +82,10 @@
   gather_facts: no
   tasks:
     - name: Update server
-      raw: 'apt update -y'
+      raw: apt update -y
       
     - name: Install python
-      raw: 'apt -y install python'
+      raw: apt -y install python
       
     - name: Update APT cache && Upgrade APT to the latest packages
       apt: 
