@@ -81,10 +81,10 @@
   become: yes
   gather_facts: no
   tasks:
-    - name: [RAW] Update server
+    - name: Update server
       raw: 'sudo apt update -y'
       
-    - name: [RAW] Install python
+    - name: Install python
       raw: 'sudo apt -y install python'
       
     - name: Update APT cache && Upgrade APT to the latest packages
