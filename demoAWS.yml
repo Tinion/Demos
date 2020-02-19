@@ -4,7 +4,7 @@
   vars:
     instance_type: t2.micro
     security_group: webservers_sg
-    image: ami-07dc734dc14746eab 
+    image: ami-0b79808e499cf3385
     keypair: aws_demo 
     region: eu-west-2
     count: 1
