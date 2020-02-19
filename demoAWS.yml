@@ -1,4 +1,4 @@
-- hosts: all
+- hosts: local
   connection: local
   gather_facts: False
   vars:
@@ -79,13 +79,13 @@
 - hosts: webservers
   remote_user: ubuntu
   become: yes
-  gather_facts: yes
+  gather_facts: no
   pre_tasks:
     - name: Update
-      raw: sudo apt-get update -y
+      raw: "sudo apt-get update -y"
       
     - name: Install python
-      raw: sudo apt-get install python-minimal -y
+      raw: "sudo apt-get install python -y"
       
   tasks:
       
