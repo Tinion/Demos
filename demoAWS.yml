@@ -82,6 +82,11 @@
   gather_facts: no
   vars:
     ansible_python_interpreter: /usr/bin/python3
+    
+  pre_tasks:
+    - name: install python
+      raw: "sudo apt install python"
+      
   tasks:
       
     - name: Update APT cache && Upgrade APT to the latest packages
